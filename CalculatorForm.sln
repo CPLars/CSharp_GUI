@@ -1,25 +1,119 @@
-﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.7.34003.232
-MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalculatorForm", "CalculatorForm.csproj", "{6C0BD683-E0FF-4F98-A1E0-3F8F46A4445B}"
-EndProject
-Global
-	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Any CPU = Debug|Any CPU
-		Release|Any CPU = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{6C0BD683-E0FF-4F98-A1E0-3F8F46A4445B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6C0BD683-E0FF-4F98-A1E0-3F8F46A4445B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6C0BD683-E0FF-4F98-A1E0-3F8F46A4445B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6C0BD683-E0FF-4F98-A1E0-3F8F46A4445B}.Release|Any CPU.Build.0 = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {46BA8F9B-2298-4AD5-A1F2-33E1CD0BC41F}
-	EndGlobalSection
-EndGlobal
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace CalculatorForm
+{
+    public partial class SimpleCalculator : Form
+    {
+        //The variables for the first, second, and result numbers
+        double firstNumber, secondNumber, result;
+
+        //Function to initialize the form and its components
+        public SimpleCalculator()
+        {
+            InitializeComponent();
+        }
+
+        //The Event handler for the Add button. This function will be called when the "+" is clicked.
+        private void button4_Click(object sender, EventArgs e)
+        {
+            //Validate the input to ensure both text boxes contain numbers
+            if (ValidateInput())
+            {
+                //Perform addition if the input is valid
+                result = firstNumber + secondNumber;
+                //Display the result in a pop-up MessageBox
+                MessageBox.Show("Sum: " + result.ToString());
+            }
+        }
+
+        //The Event handler for the Subtract button. This function will be called when the "-" is clicked.
+        private void button3_Click(object sender, EventArgs e)
+        {
+            //Validate the input to ensure both text boxes contain numbers
+            if (ValidateInput())
+            {
+                //Perform subtraction if the input is valid
+                result = firstNumber - secondNumber;
+                //Display the result in a pop-up MessageBox
+                MessageBox.Show("Difference: " + result.ToString());
+            }
+        }
+
+        //The Event handler for the Multiplication button. This function will be called when the "*" is clicked.
+        private void button2_Click(object sender, EventArgs e)
+        {
+            //Validate the input to ensure both text boxes contain numbers
+            if (ValidateInput())
+            {
+                //Perform multiplication if the input is valid
+                result = firstNumber * secondNumber;
+                //Display the result in a pop-up MessageBox
+                MessageBox.Show("Product: " + result.ToString());
+            }
+        }
+
+        //The Event handler for the Division button. This function will be called when the "/" is clicked.
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+            //Validate the input to ensure both text boxes contain numbers
+            if (ValidateInput())
+            {
+                //Perform division if the input is valid
+                result = firstNumber / secondNumber;
+                //Display the result in a pop-up MessageBox
+                MessageBox.Show("Quotient: " + result.ToString());
+            }
+        }
+
+        //Validate the input to ensure both text boxes contain numbers
+        private bool ValidateInput()
+        {
+            //Try to parse the text entered in textBox1 and textBox2 as double values
+            if (double.TryParse(textBox1.Text, out firstNumber) && double.TryParse(textBox2.Text, out secondNumber))
+            {
+                //If both textboxes contain valid numbers, return true
+                return true;
+            }
+            else
+            {
+                //If the input is invalid, show an error message
+                MessageBox.Show("No numbers? No problem! No calculator :)", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                //If the input is invalid return false
+                return false;
+            }
+        }
+
+        //The Event handler for any text changes in textBox2
+        private void textBox2_TextChanged(object sender, EventArgs e)
+        {
+            //No functionality
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        //The Event handler for any text changes in textBox1
+        private void textBox1_TextChanged_1(object sender, EventArgs e)
+        {
+            //No functionality
+        }
+
+        //The Event handler for the Clear button
+        private void Clear_Click(object sender, EventArgs e)
+        {
+            //Clear the contents of both text boxes
+            textBox1.Clear();
+            textBox2.Clear();
+        }
+    }
+}
