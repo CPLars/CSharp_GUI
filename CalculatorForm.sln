@@ -66,10 +66,18 @@ namespace CalculatorForm
             //Validate the input to ensure both text boxes contain numbers
             if (ValidateInput())
             {
-                //Perform division if the input is valid
-                result = firstNumber / secondNumber;
-                //Display the result in a pop-up MessageBox
-                MessageBox.Show("Quotient: " + result.ToString());
+                if (secondNumber == 0)
+                {
+                    MessageBox.Show("Hey! That's illegal, you can't divide by zero!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    textBox2.Clear();
+                }
+                else
+                {
+                    //Perform division if the input is valid
+                    result = firstNumber / secondNumber;
+                    //Display the result in a pop-up MessageBox
+                    MessageBox.Show("Quotient: " + result.ToString());
+                }
             }
         }
 
@@ -85,7 +93,7 @@ namespace CalculatorForm
             else
             {
                 //If the input is invalid, show an error message
-                MessageBox.Show("No numbers? No problem! No calculator :)", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Sorry, we can only afford numbers in this economy. :)", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 //If the input is invalid return false
                 return false;
             }
@@ -112,8 +120,8 @@ namespace CalculatorForm
         private void Clear_Click(object sender, EventArgs e)
         {
             //Clear the contents of both text boxes
-            textBox1.Clear();
             textBox2.Clear();
+            textBox1.Clear();
         }
     }
 }
