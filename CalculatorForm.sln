@@ -14,13 +14,14 @@ namespace CalculatorForm
     {
         //The variables for the first, second, and result numbers
         double firstNumber, secondNumber, result;
+        bool continueCalculating = true; //Control variable for the loop
 
         //Function to initialize the form and its components
         public SimpleCalculator()
         {
             InitializeComponent();
         }
-
+        
         //The Event handler for the Add button. This function will be called when the "+" is clicked.
         private void button4_Click(object sender, EventArgs e)
         {
@@ -66,43 +67,66 @@ namespace CalculatorForm
             //Validate the input to ensure both text boxes contain numbers
             if (ValidateInput())
             {
-                if (secondNumber == 0)
+                try
                 {
-                    MessageBox.Show("Hey! That's illegal, you can't divide by zero!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    textBox2.Clear();
-                }
-                else
-                {
-                    //Perform division if the input is valid
+                    if (secondNumber == 0) //Check for zero in the denominator during division
+                    {
+                        throw new DivideByZeroException("Hey! That's illegal!"); //Throws a new exception when zero is in the denominator
+                    }
                     result = firstNumber / secondNumber;
-                    //Display the result in a pop-up MessageBox
+                    //Display the result
                     MessageBox.Show("Quotient: " + result.ToString());
                 }
+                catch (DivideByZeroException ex) 
+                {
+                    //Display the error in a message box
+                    MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            }
+        }
+
+        //The handler for the Power (^) button. This function calculates exponents. 
+        private void Power_Click(object sender, EventArgs e)
+        {
+            if (ValidateInput())
+            {
+                double powerResult = 1; //Create result variable
+                for (int i = 0; i < (int)secondNumber; i++) //"For" loop to calculate powers
+                {
+                    powerResult *= firstNumber; //Multiplies the base by itself
+                    //Display the result of the exponent calculation
+                    MessageBox.Show(firstNumber + " to the power of " + secondNumber + " is: " + powerResult);
+                }               
+                
             }
         }
 
         //Validate the input to ensure both text boxes contain numbers
         private bool ValidateInput()
         {
-            //Try to parse the text entered in textBox1 and textBox2 as double values
-            if (double.TryParse(textBox1.Text, out firstNumber) && double.TryParse(textBox2.Text, out secondNumber))
+            try
             {
-                //If both textboxes contain valid numbers, return true
-                return true;
+                //Try to parse the text entered in textBox1 and textBox2 as double values
+                if (!double.TryParse(textBox1.Text, out firstNumber) || !double.TryParse(textBox2.Text, out secondNumber))
+                {
+                    throw new FormatException("We can only afford numbers. :)");
+
+                }
+                return true; //Return true if input is valid
             }
-            else
+            catch (FormatException ex)
             {
-                //If the input is invalid, show an error message
-                MessageBox.Show("Sorry, we can only afford numbers in this economy. :)", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                //If the input is invalid return false
-                return false;
+                //Display error message if input is invalid
+                MessageBox.Show(ex.Message, "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false; //Return false if input returns invalid
             }
+            
         }
 
         //The Event handler for any text changes in textBox2
         private void textBox2_TextChanged(object sender, EventArgs e)
         {
-            //No functionality
+
         }
 
         private void Form1_Load(object sender, EventArgs e)
