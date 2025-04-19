@@ -14,14 +14,31 @@ namespace CalculatorForm
     {
         //The variables for the first, second, and result numbers
         double firstNumber, secondNumber, result;
+        List<double> resultHistory = new List<double>(); //Stores results from past calculations
         bool continueCalculating = true; //Control variable for the loop
 
         //Function to initialize the form and its components
         public SimpleCalculator()
         {
             InitializeComponent();
+            
         }
-        
+
+        private void generateRandom_Click(object sender, EventArgs e)
+        {
+            int[] randomNumbers = new int[2]; //Array to hold 5 random numbers
+            Random rand = new Random();       //Random number generator
+            string result = "Your numbers are:\n";
+
+            for (int i = 0; i < randomNumbers.Length; i++)
+            {
+                randomNumbers[i] = rand.Next(1, 101); //Gets a random number from 1–100
+                result += randomNumbers[i] + "\n";
+            }
+
+            MessageBox.Show(result, "Random Number Generator");
+        }
+
         //The Event handler for the Add button. This function will be called when the "+" is clicked.
         private void button4_Click(object sender, EventArgs e)
         {
@@ -32,6 +49,8 @@ namespace CalculatorForm
                 result = firstNumber + secondNumber;
                 //Display the result in a pop-up MessageBox
                 MessageBox.Show("Sum: " + result.ToString());
+
+                resultHistory.Add(result); //Saves the current result to the history
             }
         }
 
@@ -45,6 +64,8 @@ namespace CalculatorForm
                 result = firstNumber - secondNumber;
                 //Display the result in a pop-up MessageBox
                 MessageBox.Show("Difference: " + result.ToString());
+
+                resultHistory.Add(result);
             }
         }
 
@@ -58,6 +79,8 @@ namespace CalculatorForm
                 result = firstNumber * secondNumber;
                 //Display the result in a pop-up MessageBox
                 MessageBox.Show("Product: " + result.ToString());
+
+                resultHistory.Add(result);
             }
         }
 
@@ -76,6 +99,7 @@ namespace CalculatorForm
                     result = firstNumber / secondNumber;
                     //Display the result
                     MessageBox.Show("Quotient: " + result.ToString());
+                    resultHistory.Add(result);
                 }
                 catch (DivideByZeroException ex) 
                 {
@@ -96,6 +120,8 @@ namespace CalculatorForm
                     powerResult *= firstNumber; //Multiplies the base by itself
                     //Display the result of the exponent calculation
                     MessageBox.Show(firstNumber + " to the power of " + secondNumber + " is: " + powerResult);
+
+                    resultHistory.Add(result);
                 }               
                 
             }
@@ -123,6 +149,33 @@ namespace CalculatorForm
             
         }
 
+        //The event handler for the "History" button
+        private void History_Click(object sender, EventArgs e)
+        {
+            //Checks if there are any results in the history list.
+            if (resultHistory.Count == 0)
+            {
+                MessageBox.Show("There's nothing here, go do some math :)");
+                return;
+            }
+
+            //Converts the history list to an array
+            double[] historyArray = resultHistory.ToArray();
+
+            //Message that will display the history
+            string historyMessage = "Previous Calculations:\n";
+
+            //Loops through the array for each result
+            for (int i = 0; i < historyArray.Length; i++)
+            {
+                //Adds each result to the message
+                historyMessage += $"{i + 1}. {historyArray[i]}\n";
+            }
+
+            //Shows all the results in a MessageBox titled "Calculation History".
+            MessageBox.Show(historyMessage, "Calculation History");
+        }
+
         //The Event handler for any text changes in textBox2
         private void textBox2_TextChanged(object sender, EventArgs e)
         {
@@ -133,6 +186,8 @@ namespace CalculatorForm
         {
 
         }
+
+
 
         //The Event handler for any text changes in textBox1
         private void textBox1_TextChanged_1(object sender, EventArgs e)
