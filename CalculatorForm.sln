@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
 
 namespace CalculatorForm
 {
@@ -15,6 +16,7 @@ namespace CalculatorForm
         //The variables for the first, second, and result numbers
         double firstNumber, secondNumber, result;
         List<double> resultHistory = new List<double>(); //Stores results from past calculations
+        List<string> calculationLog = new List<string>(); //Stores equation logs
         bool continueCalculating = true; //Control variable for the loop
 
         //Function to initialize the form and its components
@@ -51,6 +53,7 @@ namespace CalculatorForm
                 MessageBox.Show("Sum: " + result.ToString());
 
                 resultHistory.Add(result); //Saves the current result to the history
+                calculationLog.Add($"{firstNumber} + {secondNumber} = {result}"); //Save the equation to the log
             }
         }
 
@@ -66,6 +69,7 @@ namespace CalculatorForm
                 MessageBox.Show("Difference: " + result.ToString());
 
                 resultHistory.Add(result);
+                calculationLog.Add($"{firstNumber} - {secondNumber} = {result}"); //Save the equation to the log
             }
         }
 
@@ -81,6 +85,7 @@ namespace CalculatorForm
                 MessageBox.Show("Product: " + result.ToString());
 
                 resultHistory.Add(result);
+                calculationLog.Add($"{firstNumber} * {secondNumber} = {result}"); //Save the equation to the log
             }
         }
 
@@ -100,6 +105,7 @@ namespace CalculatorForm
                     //Display the result
                     MessageBox.Show("Quotient: " + result.ToString());
                     resultHistory.Add(result);
+                    calculationLog.Add($"{firstNumber} / {secondNumber} = {result}"); //Save the equation to the log
                 }
                 catch (DivideByZeroException ex) 
                 {
@@ -122,6 +128,7 @@ namespace CalculatorForm
                     MessageBox.Show(firstNumber + " to the power of " + secondNumber + " is: " + powerResult);
 
                     resultHistory.Add(result);
+                    calculationLog.Add($"{firstNumber} + {secondNumber} = {result}"); //Save the equation to the log
                 }               
                 
             }
@@ -176,6 +183,97 @@ namespace CalculatorForm
             MessageBox.Show(historyMessage, "Calculation History");
         }
 
+        // Method to save calculation history and log to two separate files
+        private void SaveToFiles(string resultPath, string logPath)
+        {
+            try
+            {
+                // Write all result history as strings to the result file
+                // `resultHistory.Select(r => r.ToString())` converts each result to a string for storage
+                File.WriteAllLines(resultPath, resultHistory.Select(r => r.ToString()));
+
+                // Write the entire calculation log to the log file
+                // `calculationLog` is assumed to be a list of strings, so it can be directly written
+                File.WriteAllLines(logPath, calculationLog);
+
+                // Inform the user that the files have been successfully saved
+                MessageBox.Show("History and log saved!");
+            }
+            catch (Exception ex)
+            {
+                // Catch any exceptions that occur during the file-writing process and show an error message
+                MessageBox.Show("Error saving files: " + ex.Message);
+            }
+        }
+
+        //Function to load calculation history and equation log from two separate files
+        private void LoadFromFiles(string resultPath, string logPath)
+        {
+            try
+            {
+                //Checks if the result file exists
+                if (File.Exists(resultPath))
+                {
+                    //If the file exists, all calculations will be read into an array 
+                    string[] resultLines = File.ReadAllLines(resultPath);
+                    //Converts the string lines to doubles and stores them in the "resultHistory" list
+                    resultHistory = resultLines.Select(line => double.Parse(line)).ToList();
+                }
+
+                //Checks if the log file exists
+                if (File.Exists(logPath))
+                {
+                    //If the file exists, read each entry into the calculation log
+                    string[] logLines = File.ReadAllLines(logPath);
+
+                    //Stores all log entries into the `calculationLog` list
+                    calculationLog = logLines.ToList();
+                }
+                MessageBox.Show("History and log loaded!");
+            }
+            catch (Exception ex)
+            {
+                //Catch any exceptions that occur and show an error message
+                MessageBox.Show("Error loading files: " + ex.Message);
+            }
+        }
+
+        private void Save_Click(object sender, EventArgs e)
+        {
+            //Calls the method and saves the current history to the two files
+            SaveToFiles("results.txt", "log.txt");
+        }
+
+        private void buttonLoad_Click(object sender, EventArgs e)
+        {
+            //Calls the method and loads the last saved data from the two files into the history
+            LoadFromFiles("results.txt", "log.txt");
+        }
+
+        private void Log_Click(object sender, EventArgs e)
+        {
+            //Checks if the operation log list is empty
+            if (calculationLog.Count == 0)
+            {
+                //If the log is empty, this lets the user know and stops here
+                MessageBox.Show("No log entries found.");
+                return;
+            }
+
+            //Starts a string to hold the calculations for the log
+            string logMessage = "Calculation Log:\n";
+
+            //Loops through each entry in the calculation log
+            foreach (string log in calculationLog)
+            {
+                //Adds each calculation to the log
+                logMessage += log + "\n";
+            }
+
+            //Shows the Log
+            MessageBox.Show(logMessage, "Log");
+        }
+
         //The Event handler for any text changes in textBox2
         private void textBox2_TextChanged(object sender, EventArgs e)
         {
@@ -186,8 +284,6 @@ namespace CalculatorForm
         {
 
         }
-
-
 
         //The Event handler for any text changes in textBox1
         private void textBox1_TextChanged_1(object sender, EventArgs e)
@@ -201,6 +297,7 @@ namespace CalculatorForm
             //Clear the contents of both text boxes
             textBox2.Clear();
             textBox1.Clear();
-        }
+        }       
     }
 }
+
